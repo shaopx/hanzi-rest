@@ -1,0 +1,45 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE")
+    }
+}
+
+
+group 'com.spx'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+apply plugin: 'war'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+jar {
+    baseName = 'gs-rest-service'
+    version =  '0.1.0'
+}
+
+war {
+    baseName = 'rest'
+    version =  '0.1'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+//    maven { url "http://repo.spring.io/libs-snapshot" }
+}
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    compile("org.springframework.boot:spring-boot-starter-data-mongodb")
+    compile 'org.codehaus.groovy:groovy-all:2.3.11'
+
+    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
+}
