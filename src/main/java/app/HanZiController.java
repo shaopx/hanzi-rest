@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+
 @RestController
 public class HanZiController {
 
@@ -39,23 +40,18 @@ public class HanZiController {
 //        return hanzis;
 //    }
 
-//    @RequestMapping("/test")
-//    public List<HanZi> test() {
-//
+    @RequestMapping("/postword")
+    public String postword(@RequestParam(value = "word", defaultValue = "wwww") String word) {
+        logger.info("postword  word:" + word);
 //        List<HanZi> all = repository.findAll();
-//        logger.info("all.size:" + all.size());
-//        StringBuilder sb = new StringBuilder("all data size:" + all.size() + "\r\n");
-//
-//        List<HanZi> hanzis = new ArrayList<>();
 //
 //        for (HanZi hanZi : all) {
-//            //repository.save(new HanZi(testcollections.key, testcollections.words));
-//            //sb.append(testcollections.key).append(":").append(testcollections.words).append("\r\n");
-//            hanzis.add(new HanZi(hanZi.yin, hanZi.zi));
-//        }
 //
-//        return hanzis;
-//    }
+//        }
+
+
+        return "postword Finished!";
+    }
 
     @RequestMapping("/hanzi")
     public HanZi hanzi(@RequestParam(value = "yin", defaultValue = "a") String yin) {
