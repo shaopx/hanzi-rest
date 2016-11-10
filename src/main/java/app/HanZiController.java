@@ -19,6 +19,9 @@ public class HanZiController {
     private HanZiRepository repository;
 
     @Autowired
+    private ShiyiRepository shiyiRepository;
+
+    @Autowired
     private TestcollectionsRepository testDataRepository;
 
 //    @RequestMapping("/upload")
@@ -60,6 +63,15 @@ public class HanZiController {
             return new HanZi("No", null);
         }
         return byYin;
+    }
+
+    @RequestMapping("/zi")
+    public Shiyi zi(@RequestParam(value = "word", defaultValue = "美") String word) {
+        Shiyi shiyi = shiyiRepository.findByWord(word);
+        if (shiyi == null) {
+            return new Shiyi("", "" , "");
+        }
+        return shiyi;
     }
 
     @RequestMapping("/")
