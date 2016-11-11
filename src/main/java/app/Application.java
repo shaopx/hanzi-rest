@@ -1,6 +1,8 @@
 package app;
 
 
+import app.data.HanZiRepository;
+import app.data.TestcollectionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,8 +12,6 @@ import org.springframework.context.annotation.ComponentScan;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.List;
-import java.util.logging.Logger;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {

@@ -1,5 +1,6 @@
 package app;
 
+import app.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -74,9 +75,23 @@ public class HanZiController {
         return shiyi;
     }
 
+    @RequestMapping("/pinyin")
+    public List<Shiyi> pinyin(@RequestParam(value = "pinyin", defaultValue = "ha") String pinyin) {
+        List<Shiyi> shiyiList = shiyiRepository.findByYin(pinyin);
+        if (shiyiList == null) {
+            shiyiList = new ArrayList<>();
+        }
+        return shiyiList;
+    }
+
     @RequestMapping("/")
     public String index() {
         return "Greetings from Spring Boot!";
+    }
+
+    @RequestMapping("/poet")
+    public Poet poet() {
+        return null;
     }
 
 }

@@ -15,7 +15,7 @@ apply plugin: 'groovy'
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'spring-boot'
-apply plugin: 'war'
+//apply plugin: 'war'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -25,10 +25,10 @@ jar {
     version =  '0.1.0'
 }
 
-war {
-    baseName = 'rest'
-    version =  '0.1'
-}
+//war {
+//    baseName = 'rest'
+//    version =  '0.1'
+//}
 
 repositories {
     mavenCentral()
@@ -41,6 +41,4 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-mongodb")
     compile 'org.codehaus.groovy:groovy-all:2.3.11'
     compile 'org.codehaus.groovy.modules.http-builder:http-builder:0.7+'
-
-    providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 }

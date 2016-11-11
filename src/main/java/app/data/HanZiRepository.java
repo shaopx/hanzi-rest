@@ -1,6 +1,5 @@
-package app;
+package app.data;
 
-import app.HanZi;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
