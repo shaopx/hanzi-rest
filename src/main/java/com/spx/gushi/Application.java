@@ -1,8 +1,8 @@
-package app;
+package com.spx.gushi;
 
 
-import app.data.HanZiRepository;
-import app.data.TestcollectionsRepository;
+import com.spx.gushi.data.HanZiRepository;
+import com.spx.gushi.data.TestcollectionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,7 +15,7 @@ import javax.servlet.ServletException;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
-        "controller", "app", "data"})
+        "com.spx.gushi"})
 public class Application extends SpringBootServletInitializer {
 
     @Autowired

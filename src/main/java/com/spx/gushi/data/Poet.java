@@ -1,4 +1,4 @@
-package app.data;
+package com.spx.gushi.data;
 
 import org.springframework.data.annotation.Id;
 
