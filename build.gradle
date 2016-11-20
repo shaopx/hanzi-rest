@@ -8,7 +8,7 @@ buildscript {
 }
 
 
-group 'com.spx'
+group 'com.spx.gushi'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'groovy'
