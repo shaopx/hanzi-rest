@@ -4,6 +4,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2016/11/19.
  */
@@ -32,7 +34,7 @@ public class Poem {
     public String yuanwen;
     public String zhujie;
     public String yiwen;
-    public String shangxi;
+    public List<Shangxi> shangxis;
 
     public Poem() {
     }
