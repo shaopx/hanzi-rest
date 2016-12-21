@@ -1,5 +1,6 @@
 package com.spx.gushi.data;
 
+import com.spx.gushi.util.Utils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -35,6 +36,10 @@ public class Poem {
     public String zhujie;
     public String yiwen;
     public List<String> shangxis;
+
+    public boolean isEmpty() {
+        return Utils.isNull(yuanwen);
+    }
 
     public Poem() {
     }
