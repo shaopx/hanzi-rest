@@ -2,14 +2,10 @@ package com.spx.gushi;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.spx.gushi.data.Poem;
-import com.spx.gushi.data.PoemRepository;
-import com.spx.gushi.data.PoemResult;
+import com.spx.gushi.data.*;
 import com.spx.gushi.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,7 +30,10 @@ public class PoemController {
     static Logger logger = Logger.getLogger("PoemController");
 
     @Autowired
-    private PoemRepository repository;
+    private PoemRepository poemRepository;
+
+    @Autowired
+    private BaikeRepository baikeRepository;
 
     @Autowired
     MongoOperations mongo;
@@ -46,12 +45,179 @@ public class PoemController {
     @RequestMapping("/poems/{id}")
     public Poem poemById(@PathVariable String id) {
         logger.info("poemById  id:" + id);
-        Poem poem = repository.findByPid(id);
+        Poem poem = poemRepository.findByPid(id);
         logger.info("poemById  poem:" + poem);
 
         return poem;
     }
 
+    @RequestMapping("/poems/zuozhe/{id}")
+    public PoemResult zuozhe(@PathVariable String id, @RequestParam(value = "page", defaultValue = "0") int page) {
+        logger.info("zuozhe  id:" + id + ", page:" + page);
+        Poem poem = poemRepository.findByPid(id);
+        logger.info("poemById  poem:" + poem);
+
+        String key = "0000000_zuozhe" + id;
+
+        List<PoemField> data = new ArrayList<>();
+
+        try {
+            if (cacheManager != null) {
+                List list = cacheManager.get(key);
+                if (list != null) {
+                    data = list;
+                    return PoemResult.buildResult(page, data);
+                }
+            }
+
+
+            if (poem.shangxis != null) {
+                if(Utils.isNotNull(poem.zuozhe)){
+                    PoemField pf = new PoemField();
+                    pf.pid = id;
+                    pf.content = poem.zuozhe;
+                    pf.src = "gscd";
+                    data.add(pf);
+                }
+            }
+
+            Baike baike = baikeRepository.findByPid(id);
+            if (baike != null) {
+                if (Utils.isNotNull(baike.zuozhe)) {
+                    addBaikeData(id, baike.zuozhe, data);
+                }
+
+            }
+
+            return PoemResult.buildResult(data);
+        } finally {
+            if (cacheManager != null) {
+                cacheManager.put(key, data);
+            }
+        }
+    }
+
+
+    @RequestMapping("/poems/zhushi/{id}")
+    public PoemResult zhushi(@PathVariable String id, @RequestParam(value = "page", defaultValue = "0") int page) {
+        logger.info("zhushi  id:" + id + ", page:" + page);
+        Poem poem = poemRepository.findByPid(id);
+        logger.info("poemById  poem:" + poem);
+
+        String key = "0000000_zhushi" + id;
+
+        List<PoemField> data = new ArrayList<>();
+
+        try {
+            if (cacheManager != null) {
+                List list = cacheManager.get(key);
+                if (list != null) {
+                    data = list;
+                    return PoemResult.buildResult(page, data);
+                }
+            }
+
+
+            if (poem.shangxis != null) {
+                if(Utils.isNotNull(poem.zhujie)){
+                    PoemField pf = new PoemField();
+                    pf.pid = id;
+                    pf.content = poem.zhujie;
+                    pf.src = "gscd";
+                    data.add(pf);
+                }
+                if(Utils.isNotNull(poem.yiwen)){
+                    PoemField pf = new PoemField();
+                    pf.pid = id;
+                    pf.content = poem.yiwen;
+                    pf.src = "gscd_yiwen";
+                    data.add(pf);
+                }
+            }
+
+            Baike baike = baikeRepository.findByPid(id);
+            if (baike != null) {
+                if (Utils.isNotNull(baike.zhujie)) {
+                    addBaikeData(id, baike.zhujie, data);
+                }
+                if (Utils.isNotNull(baike.zhushi)) {
+                    addBaikeData(id, baike.zhushi, data);
+                }
+                if (Utils.isNotNull(baike.yiwen)) {
+                    addBaikeData(id, baike.yiwen, data);
+                }
+            }
+
+            return PoemResult.buildResult(data);
+        } finally {
+            if (cacheManager != null) {
+                cacheManager.put(key, data);
+            }
+        }
+    }
+
+
+    @RequestMapping("/poems/shangxi/{id}")
+    public PoemResult shangxi(@PathVariable String id, @RequestParam(value = "page", defaultValue = "0") int page) {
+        logger.info("shangxi  id:" + id + ", page:" + page);
+        Poem poem = poemRepository.findByPid(id);
+        logger.info("poemById  poem:" + poem);
+
+        String key = "0000000_shangxi" + id;
+
+        List<PoemField> shangxis = new ArrayList<>();
+
+        try {
+            if (cacheManager != null) {
+                List list = cacheManager.get(key);
+                if (list != null) {
+                    shangxis = list;
+                    return PoemResult.buildResult(page, shangxis);
+                }
+            }
+
+
+            if (poem.shangxis != null && poem.shangxis.size() > 0) {
+                for (Poem.Shangxi shangxi : poem.shangxis) {
+                    PoemField pf = new PoemField();
+                    pf.pid = id;
+                    pf.content = shangxi.shangxi;
+                    pf.src = shangxi.src;
+                    shangxis.add(pf);
+                }
+            }
+
+            Baike baike = baikeRepository.findByPid(id);
+            if (baike != null) {
+                if (Utils.isNotNull(baike.beijing)) {
+                    addBaikeData(id, baike.beijing, shangxis);
+                }
+                if (Utils.isNotNull(baike.sum)) {
+                    addBaikeData(id, baike.sum, shangxis);
+                }
+                if (Utils.isNotNull(baike.shangxi1)) {
+                    addBaikeData(id, baike.shangxi1, shangxis);
+                }
+                if (Utils.isNotNull(baike.shangxi2)) {
+                    addBaikeData(id, baike.shangxi2, shangxis);
+                }
+            }
+
+            return PoemResult.buildResult(shangxis);
+        } finally {
+            if (cacheManager != null) {
+                cacheManager.put(key, shangxis);
+            }
+        }
+    }
+
+    private void addBaikeData(String pid, String text, List<PoemField> shangxis) {
+        PoemField sx = new PoemField();
+        sx.pid = pid;
+        sx.content = text;
+        sx.src = "baike";
+        shangxis.add(sx);
+    }
 
     @RequestMapping("/poems/random/{num}")
     public PoemResult randomPoems(@PathVariable String num) {
@@ -61,11 +227,49 @@ public class PoemController {
         List<Poem> poems = new ArrayList<>();
         Random ra = new Random();
 
+        {
+            int index = 13952;
+            Poem poem = poemRepository.findByPid("" + index);
+            if (poem != null && !poem.isEmpty()) {
+                Poem p = new Poem();
+                p.yuanwen = poem.yuanwen;
+                p.zuozhe = poem.zuozhe;
+                p.chaodai = poem.chaodai;
+                p.name = poem.name;
+                p.id = poem.id;
+                p.pid = poem.pid;
+                poems.add(p);
+            }
+        }
+
+        {
+            int index = 9542;
+            Poem poem = poemRepository.findByPid("" + index);
+            if (poem != null && !poem.isEmpty()) {
+                Poem p = new Poem();
+                p.yuanwen = poem.yuanwen;
+                p.zuozhe = poem.zuozhe;
+                p.chaodai = poem.chaodai;
+                p.name = poem.name;
+                p.id = poem.id;
+                p.pid = poem.pid;
+                poems.add(p);
+            }
+        }
+
+
         while (poems.size() < number) {
             int index = ra.nextInt(POEM_MAX);
-            Poem poem = repository.findByPid("" + index);
+            Poem poem = poemRepository.findByPid("" + index);
             if (poem != null && !poem.isEmpty()) {
-                poems.add(poem);
+                Poem p = new Poem();
+                p.yuanwen = poem.yuanwen;
+                p.zuozhe = poem.zuozhe;
+                p.chaodai = poem.chaodai;
+                p.name = poem.name;
+                p.id = poem.id;
+                p.pid = poem.pid;
+                poems.add(p);
             }
 
         }
@@ -84,7 +288,7 @@ public class PoemController {
                 + ", zuozhe:" + zuozhe + ", congshu:" + congshu
                 + ", chaodai:" + chaodai + ", page:" + page);
 
-        logger.info("cacheManager:" + cacheManager);
+//        logger.info("cacheManager:" + cacheManager);
         List<Poem> poems = new ArrayList<>();
 
         String key = "0000000" + name + ciyu + zuozhe + congshu + chaodai;
@@ -104,7 +308,7 @@ public class PoemController {
             }
 
             if (isNotNull(ciyu)) {
-                poems = repository.findByYuanwenContains(ciyu);
+                poems = poemRepository.findByYuanwenContains(ciyu);
                 if (poems.size() == 0) {
                     return PoemResult.buildResult(page, poems);
                 }
@@ -134,7 +338,7 @@ public class PoemController {
 
 
             if (isNotNull(name)) {
-                poems = repository.findByNameContains(name);
+                poems = poemRepository.findByNameContains(name);
                 if (poems.size() == 0) {
                     return PoemResult.buildResult(page, poems);
                 }
@@ -174,7 +378,7 @@ public class PoemController {
                 return PoemResult.buildResult(page, poems);
             }
 
-            poems = repository.findPoems(dbObject);
+            poems = poemRepository.findPoems(dbObject);
 
 
             return PoemResult.buildResult(page, poems);
