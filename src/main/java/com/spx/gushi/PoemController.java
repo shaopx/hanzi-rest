@@ -29,8 +29,15 @@ public class PoemController {
 
     static Logger logger = Logger.getLogger("PoemController");
 
+    static String GUSHICIDIAN = "<<古诗词典>>";
+    static String BAIDUBAIKE = "'百度百科'";
+    static String TAGNSHIJIANSHANG = "<<唐诗鉴赏>>";
+
     @Autowired
     private PoemRepository poemRepository;
+
+    @Autowired
+    private ZuozheRepository zuozheRepository;
 
     @Autowired
     private BaikeRepository baikeRepository;
@@ -51,13 +58,13 @@ public class PoemController {
         return poem;
     }
 
-    @RequestMapping("/poems/zuozhe/{id}")
-    public PoemResult zuozhe(@PathVariable String id, @RequestParam(value = "page", defaultValue = "0") int page) {
-        logger.info("zuozhe  id:" + id + ", page:" + page);
-        Poem poem = poemRepository.findByPid(id);
-        logger.info("poemById  poem:" + poem);
+    @RequestMapping("/poems/zuozhe/{name}")
+    public PoemResult zuozhe(@PathVariable String name, @RequestParam(value = "page", defaultValue = "0") int page) {
+        logger.info("zuozhe  name:" + name + ", page:" + page);
+        Zuozhe zuozhe = zuozheRepository.findByXingming(name);
+        logger.info("zuozhe:" + zuozhe);
 
-        String key = "0000000_zuozhe" + id;
+        String key = "0000000_zuozhe" + zuozhe;
 
         List<PoemField> data = new ArrayList<>();
 
@@ -70,24 +77,12 @@ public class PoemController {
                 }
             }
 
+            PoemField pf = new PoemField();
+            pf.pid = zuozhe.zid;
+            pf.content = zuozhe.jieshao;
+            pf.src = GUSHICIDIAN;
+            data.add(pf);
 
-            if (poem.shangxis != null) {
-                if(Utils.isNotNull(poem.zuozhe)){
-                    PoemField pf = new PoemField();
-                    pf.pid = id;
-                    pf.content = poem.zuozhe;
-                    pf.src = "gscd";
-                    data.add(pf);
-                }
-            }
-
-            Baike baike = baikeRepository.findByPid(id);
-            if (baike != null) {
-                if (Utils.isNotNull(baike.zuozhe)) {
-                    addBaikeData(id, baike.zuozhe, data);
-                }
-
-            }
 
             return PoemResult.buildResult(data);
         } finally {
@@ -119,14 +114,14 @@ public class PoemController {
 
 
             if (poem.shangxis != null) {
-                if(Utils.isNotNull(poem.zhujie)){
+                if (Utils.isNotNull(poem.zhujie)) {
                     PoemField pf = new PoemField();
                     pf.pid = id;
                     pf.content = poem.zhujie;
-                    pf.src = "gscd";
+                    pf.src = GUSHICIDIAN;
                     data.add(pf);
                 }
-                if(Utils.isNotNull(poem.yiwen)){
+                if (Utils.isNotNull(poem.yiwen)) {
                     PoemField pf = new PoemField();
                     pf.pid = id;
                     pf.content = poem.yiwen;
@@ -183,6 +178,11 @@ public class PoemController {
                     pf.pid = id;
                     pf.content = shangxi.shangxi;
                     pf.src = shangxi.src;
+                    if ("tsjs".equals(pf.src)) {
+                        pf.src = TAGNSHIJIANSHANG;
+                    } else if ("gscd".equals(pf.src)) {
+                        pf.src = GUSHICIDIAN;
+                    }
                     shangxis.add(pf);
                 }
             }
@@ -215,7 +215,7 @@ public class PoemController {
         PoemField sx = new PoemField();
         sx.pid = pid;
         sx.content = text;
-        sx.src = "baike";
+        sx.src = BAIDUBAIKE;
         shangxis.add(sx);
     }
 
