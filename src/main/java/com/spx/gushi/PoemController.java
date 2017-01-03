@@ -61,10 +61,10 @@ public class PoemController {
     @RequestMapping("/poems/zuozhe/{name}")
     public PoemResult zuozhe(@PathVariable String name, @RequestParam(value = "page", defaultValue = "0") int page) {
         logger.info("zuozhe  name:" + name + ", page:" + page);
-        Zuozhe zuozhe = zuozheRepository.findByXingming(name);
-        logger.info("zuozhe:" + zuozhe);
+        List<Zuozhe> zuozheList = zuozheRepository.findByXingming(name);
+        //logger.info("zuozhe:" + zuozheList);
 
-        String key = "0000000_zuozhe" + zuozhe;
+        String key = "0000000_zuozhe" + name;
 
         List<PoemField> data = new ArrayList<>();
 
@@ -77,11 +77,14 @@ public class PoemController {
                 }
             }
 
-            PoemField pf = new PoemField();
-            pf.pid = zuozhe.zid;
-            pf.content = zuozhe.jieshao;
-            pf.src = GUSHICIDIAN;
-            data.add(pf);
+            for (Zuozhe zuozhe : zuozheList) {
+                PoemField pf = new PoemField();
+                pf.pid = zuozhe.zid;
+                pf.content = zuozhe.jieshao;
+                pf.src = GUSHICIDIAN;
+                data.add(pf);
+            }
+
 
 
             return PoemResult.buildResult(data);
@@ -151,6 +154,51 @@ public class PoemController {
         }
     }
 
+
+    @RequestMapping("/poems/yiwen/{id}")
+    public PoemResult yiwen(@PathVariable String id, @RequestParam(value = "page", defaultValue = "0") int page) {
+        logger.info("yiwen  id:" + id + ", page:" + page);
+        Poem poem = poemRepository.findByPid(id);
+        logger.info("poemById  poem:" + poem);
+
+        String key = "0000000_yiwen" + id;
+
+        List<PoemField> data = new ArrayList<>();
+
+        try {
+            if (cacheManager != null) {
+                List list = cacheManager.get(key);
+                if (list != null) {
+                    data = list;
+                    return PoemResult.buildResult(page, data);
+                }
+            }
+
+
+            if (poem.yiwen != null) {
+                if (Utils.isNotNull(poem.yiwen)) {
+                    PoemField pf = new PoemField();
+                    pf.pid = id;
+                    pf.content = poem.yiwen;
+                    pf.src = GUSHICIDIAN;
+                    data.add(pf);
+                }
+            }
+
+            Baike baike = baikeRepository.findByPid(id);
+            if (baike != null) {
+                if (Utils.isNotNull(baike.yiwen)) {
+                    addBaikeData(id, baike.yiwen, data);
+                }
+            }
+
+            return PoemResult.buildResult(data);
+        } finally {
+            if (cacheManager != null) {
+                cacheManager.put(key, data);
+            }
+        }
+    }
 
     @RequestMapping("/poems/shangxi/{id}")
     public PoemResult shangxi(@PathVariable String id, @RequestParam(value = "page", defaultValue = "0") int page) {

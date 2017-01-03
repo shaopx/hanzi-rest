@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface ZuozheRepository extends MongoRepository<Zuozhe, String> {
 
-    public Zuozhe findByXingming(String xingming);
+    public List<Zuozhe> findByXingming(String xingming);
 }
