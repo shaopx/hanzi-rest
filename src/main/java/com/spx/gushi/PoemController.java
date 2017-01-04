@@ -120,8 +120,10 @@ public class PoemController {
 //                    Result pf = Result.build().src("gscd").type("zhushi");
 //                    pf.put("pid", id);
 //                    pf.put("content", poem.zhujie);
-                    ZhushiHandler.makeZhushiResult(poem.yuanwen, poem.zhujie, data);
+//                    pf.put("yuanwen", poem.yuanwen);
 //                    data.add(pf);
+
+                    ZhushiHandler.makeZhushiResult(poem.yuanwen, poem.zhujie, data);
                 }
 
             }
@@ -139,14 +141,14 @@ public class PoemController {
                     ZhushiHandler.makeZhushiResult(poem.yuanwen, zhushi, data);
 
 
-//                    addBaikeData(id, "zhushi", baike.zhushi, data);
+                    //addBaikeData(id, "zhushi", baike.zhushi, data);
                 }
 //                if (Utils.isNotNull(baike.yiwen)) {
 //                    addBaikeData(id, baike.yiwen, d);
 //                }
             }
 
-
+            logger.info("yiwen:"+poem.yiwen);
             if (Utils.isNotNull(poem.yiwen)) {
                 Result pf = Result.build().src("gscd").type("yiwen");
                 pf.put("pid", id);
