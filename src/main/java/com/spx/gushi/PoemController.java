@@ -234,7 +234,7 @@ public class PoemController {
                     PoemField pf = new PoemField();
                     pf.pid = id;
                     pf.content = shangxi.shangxi;
-                    pf.src = shangxi.src;
+                    pf.src = shangxi.src.trim();
                     pf.type = "shangxi";
                     if ("tsjs".equals(pf.src.trim())) {
                         pf.srcDesc = TAGNSHIJIANSHANG;
