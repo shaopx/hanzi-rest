@@ -81,7 +81,9 @@ public class PoemController {
                 PoemField pf = new PoemField();
                 pf.pid = zuozhe.zid;
                 pf.content = zuozhe.jieshao;
-                pf.src = GUSHICIDIAN;
+                pf.src = "gscd";
+                pf.srcDesc = GUSHICIDIAN;
+                pf.type = "zuozhe";
                 data.add(pf);
             }
 
@@ -186,7 +188,8 @@ public class PoemController {
                     PoemField pf = new PoemField();
                     pf.pid = id;
                     pf.content = poem.yiwen;
-                    pf.src = GUSHICIDIAN;
+                    pf.src = "gscd";
+                    pf.srcDesc = GUSHICIDIAN;
                     data.add(pf);
                 }
             }
