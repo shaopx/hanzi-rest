@@ -13,7 +13,7 @@ public class Utils {
         return str == null || str.trim().length() == 0 || str.trim().equalsIgnoreCase("NULL");
     }
 
-    public static boolean isNotNull(String str){
+    public static boolean isNotNull(String str) {
         return !isNull(str);
     }
 
@@ -34,13 +34,15 @@ public class Utils {
     }
 
 
-    public static String getSubstring(String str, String startTag, String endTag){
-        int startIndex = str.indexOf(startTag)+startTag.length();
-        if(startIndex==-1){
+    public static String getSubstring(String str, String startTag, String endTag) {
+        int startIndex = str.indexOf(startTag);
+        if (startIndex == -1) {
             startIndex = 0;
+        } else {
+            startIndex += startTag.length();
         }
         int endIndex = str.indexOf(endTag);
-        if(endIndex==-1){
+        if (endIndex == -1) {
             endIndex = str.length();
         }
         return str.substring(startIndex, endIndex);

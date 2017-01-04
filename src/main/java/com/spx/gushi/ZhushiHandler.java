@@ -27,7 +27,7 @@ public class ZhushiHandler {
         for (char ch = '\u2474'; ch < '\u24ff'; ch++) {
             tag += ch;
         }
-        System.out.println("tag:" + tag);
+        //System.out.println("tag:" + tag);
 //        System.out.println("247f:"+"\u247f");
 //        System.out.println("2480:"+"\u2480");
 //        System.out.println("2481:"+"\u2481");
@@ -103,10 +103,6 @@ public class ZhushiHandler {
                 }
             }
 
-//            int index = 0;
-//            while(index<line.length()){
-//
-//            }
         }
 
 
@@ -117,6 +113,7 @@ public class ZhushiHandler {
         for (Result result : resultList) {
             String ciyu = (String) result.get("ciyu");
             if (Utils.isNull(ciyu)) {
+                addToList(yuanwen, result, paramResultList);
                 continue;
             }
             boolean found = false;
@@ -163,8 +160,8 @@ public class ZhushiHandler {
         String num = (String) r.get("l");
         if (Utils.isNull(num)) {
             String cy = (String) r.get("ciyu");
-            int inde = yuanwen.indexOf(cy);
-            r.put("l", "" + inde);
+            int index = yuanwen.indexOf(cy);
+            r.put("l", "" + index);
         }
 
         resultList.add(r);
