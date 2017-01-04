@@ -66,7 +66,7 @@ public class PoemController {
 
         String key = "0000000_zuozhe" + name;
 
-        List<ResultFiled> data = new ArrayList<>();
+        List<Result> data = new ArrayList<>();
 
         try {
             if (cacheManager != null) {
@@ -78,7 +78,7 @@ public class PoemController {
             }
 
             for (Zuozhe zuozhe : zuozheList) {
-                ResultFiled pf = ResultFiled.build().src("gscd").type("zuozhe");
+                Result pf = Result.build().src("gscd").type("zuozhe");
                 pf.put("zid", zuozhe.zid);
                 pf.put("content", zuozhe.jieshao);
                 data.add(pf);
@@ -103,7 +103,7 @@ public class PoemController {
 
         String key = "0000000_zhushi" + id;
 
-        List<ResultFiled> data = new ArrayList<>();
+        List<Result> data = new ArrayList<>();
 
         try {
             if (cacheManager != null) {
@@ -117,11 +117,11 @@ public class PoemController {
 
             if (poem.zhujie != null) {
                 if (Utils.isNotNull(poem.zhujie)) {
-                    ResultFiled pf = ResultFiled.build().src("gscd").type("zhushi");
-                    pf.put("pid", id);
-                    pf.put("content", poem.zhujie);
-
-                    data.add(pf);
+//                    Result pf = Result.build().src("gscd").type("zhushi");
+//                    pf.put("pid", id);
+//                    pf.put("content", poem.zhujie);
+                    ZhushiHandler.makeZhushiResult(poem.yuanwen, poem.zhujie, data);
+//                    data.add(pf);
                 }
 
             }
@@ -129,10 +129,17 @@ public class PoemController {
             Baike baike = baikeRepository.findByPid(id);
             if (baike != null) {
                 if (Utils.isNotNull(baike.zhujie)) {
-                    addBaikeData(id, "zhushi", baike.zhujie, data);
+//                    addBaikeData(id, "zhushi", baike.zhujie, data);
+
+//                    String zhushi = Utils.getSubstring(baike.zhujie, "注解", poem.name+"白话译文");
+//                    ZhushiHandler.makeZhushiResult(zhushi, data);
                 }
                 if (Utils.isNotNull(baike.zhushi)) {
-                    addBaikeData(id, "zhushi", baike.zhushi, data);
+                    String zhushi = Utils.getSubstring(baike.zhushi, "词句注释", poem.name+"白话译文");
+                    ZhushiHandler.makeZhushiResult(poem.yuanwen, zhushi, data);
+
+
+//                    addBaikeData(id, "zhushi", baike.zhushi, data);
                 }
 //                if (Utils.isNotNull(baike.yiwen)) {
 //                    addBaikeData(id, baike.yiwen, d);
@@ -141,7 +148,7 @@ public class PoemController {
 
 
             if (Utils.isNotNull(poem.yiwen)) {
-                ResultFiled pf = ResultFiled.build().src("gscd").type("yiwen");
+                Result pf = Result.build().src("gscd").type("yiwen");
                 pf.put("pid", id);
                 pf.put("content", poem.yiwen);
 
@@ -165,7 +172,7 @@ public class PoemController {
 
         String key = "0000000_yiwen" + id;
 
-        List<ResultFiled> data = new ArrayList<>();
+        List<Result> data = new ArrayList<>();
 
         try {
             if (cacheManager != null) {
@@ -179,7 +186,7 @@ public class PoemController {
 
             if (poem.yiwen != null) {
                 if (Utils.isNotNull(poem.yiwen)) {
-                    ResultFiled pf = ResultFiled.build().src("gscd").type("yiwen");
+                    Result pf = Result.build().src("gscd").type("yiwen");
                     pf.put("pid", id);
                     pf.put("content", poem.yiwen);
                     data.add(pf);
@@ -209,7 +216,7 @@ public class PoemController {
 
         String key = "0000000_sx" + id;
 
-        List<ResultFiled> shangxis = new ArrayList<>();
+        List<Result> shangxis = new ArrayList<>();
 
         try {
             if (cacheManager != null) {
@@ -223,7 +230,7 @@ public class PoemController {
 
             if (poem.shangxis != null && poem.shangxis.size() > 0) {
                 for (Poem.Shangxi shangxi : poem.shangxis) {
-                    ResultFiled pf = ResultFiled.build().src(shangxi.src.trim()).type("shangxi");
+                    Result pf = Result.build().src(shangxi.src.trim()).type("shangxi");
                     pf.put("pid", id);
                     pf.put("content",  shangxi.shangxi.trim());
                     shangxis.add(pf);
@@ -254,8 +261,8 @@ public class PoemController {
         }
     }
 
-    private void addBaikeData(String pid, String type, String text, List<ResultFiled> results) {
-        ResultFiled pf = ResultFiled.build().src("baidu_baike").type(type);
+    private void addBaikeData(String pid, String type, String text, List<Result> results) {
+        Result pf = Result.build().src("baidu_baike").type(type);
         pf.put("pid", pid);
         pf.put("content", text);
         results.add(pf);
@@ -273,7 +280,7 @@ public class PoemController {
             int index = 13952;
             Poem poem = poemRepository.findByPid("" + index);
             if (poem != null && !poem.isEmpty()) {
-                ResultFiled rf = ResultFiled.build().type("poem");
+                Result rf = Result.build().type("poem");
                 rf.put("yuanwen", poem.yuanwen);
                 rf.put("zuozhe", poem.zuozhe);
                 rf.put("chaodai", poem.chaodai);
@@ -287,7 +294,7 @@ public class PoemController {
             int index = 9542;
             Poem poem = poemRepository.findByPid("" + index);
             if (poem != null && !poem.isEmpty()) {
-                ResultFiled rf = ResultFiled.build().type("poem");
+                Result rf = Result.build().type("poem");
                 rf.put("yuanwen", poem.yuanwen);
                 rf.put("zuozhe", poem.zuozhe);
                 rf.put("chaodai", poem.chaodai);
@@ -302,7 +309,7 @@ public class PoemController {
             int index = ra.nextInt(POEM_MAX);
             Poem poem = poemRepository.findByPid("" + index);
             if (poem != null && !poem.isEmpty()) {
-                ResultFiled rf = ResultFiled.build().type("poem");
+                Result rf = Result.build().type("poem");
                 rf.put("yuanwen", poem.yuanwen);
                 rf.put("zuozhe", poem.zuozhe);
                 rf.put("chaodai", poem.chaodai);
