@@ -66,7 +66,7 @@ public class PoemController {
 
         String key = "0000000_zuozhe" + name;
 
-        List<PoemField> data = new ArrayList<>();
+        List<ResultFiled> data = new ArrayList<>();
 
         try {
             if (cacheManager != null) {
@@ -78,12 +78,9 @@ public class PoemController {
             }
 
             for (Zuozhe zuozhe : zuozheList) {
-                PoemField pf = new PoemField();
-                pf.pid = zuozhe.zid;
-                pf.content = zuozhe.jieshao;
-                pf.src = "gscd";
-                pf.srcDesc = GUSHICIDIAN;
-                pf.type = "zuozhe";
+                ResultFiled pf = ResultFiled.build().src("gscd").type("zuozhe");
+                pf.put("zid", zuozhe.zid);
+                pf.put("content", zuozhe.jieshao);
                 data.add(pf);
             }
 
@@ -106,7 +103,7 @@ public class PoemController {
 
         String key = "0000000_zhushi" + id;
 
-        List<PoemField> data = new ArrayList<>();
+        List<ResultFiled> data = new ArrayList<>();
 
         try {
             if (cacheManager != null) {
@@ -120,11 +117,10 @@ public class PoemController {
 
             if (poem.zhujie != null) {
                 if (Utils.isNotNull(poem.zhujie)) {
-                    PoemField pf = new PoemField();
-                    pf.pid = id;
-                    pf.content = poem.zhujie;
-                    pf.src = "gscd";
-                    pf.srcDesc = GUSHICIDIAN;
+                    ResultFiled pf = ResultFiled.build().src("gscd").type("zhushi");
+                    pf.put("pid", id);
+                    pf.put("content", poem.zhujie);
+
                     data.add(pf);
                 }
 
@@ -139,18 +135,16 @@ public class PoemController {
                     addBaikeData(id, "zhushi", baike.zhushi, data);
                 }
 //                if (Utils.isNotNull(baike.yiwen)) {
-//                    addBaikeData(id, baike.yiwen, data);
+//                    addBaikeData(id, baike.yiwen, d);
 //                }
             }
 
 
             if (Utils.isNotNull(poem.yiwen)) {
-                PoemField pf = new PoemField();
-                pf.pid = id;
-                pf.content = poem.yiwen;
-                pf.type = "yiwen";
-                pf.src = "gscd";
-                pf.srcDesc = GUSHICIDIAN;
+                ResultFiled pf = ResultFiled.build().src("gscd").type("yiwen");
+                pf.put("pid", id);
+                pf.put("content", poem.yiwen);
+
                 data.add(pf);
             }
 
@@ -171,7 +165,7 @@ public class PoemController {
 
         String key = "0000000_yiwen" + id;
 
-        List<PoemField> data = new ArrayList<>();
+        List<ResultFiled> data = new ArrayList<>();
 
         try {
             if (cacheManager != null) {
@@ -185,11 +179,9 @@ public class PoemController {
 
             if (poem.yiwen != null) {
                 if (Utils.isNotNull(poem.yiwen)) {
-                    PoemField pf = new PoemField();
-                    pf.pid = id;
-                    pf.content = poem.yiwen;
-                    pf.src = "gscd";
-                    pf.srcDesc = GUSHICIDIAN;
+                    ResultFiled pf = ResultFiled.build().src("gscd").type("yiwen");
+                    pf.put("pid", id);
+                    pf.put("content", poem.yiwen);
                     data.add(pf);
                 }
             }
@@ -217,7 +209,7 @@ public class PoemController {
 
         String key = "0000000_sx" + id;
 
-        List<PoemField> shangxis = new ArrayList<>();
+        List<ResultFiled> shangxis = new ArrayList<>();
 
         try {
             if (cacheManager != null) {
@@ -231,16 +223,9 @@ public class PoemController {
 
             if (poem.shangxis != null && poem.shangxis.size() > 0) {
                 for (Poem.Shangxi shangxi : poem.shangxis) {
-                    PoemField pf = new PoemField();
-                    pf.pid = id;
-                    pf.content = shangxi.shangxi;
-                    pf.src = shangxi.src.trim();
-                    pf.type = "shangxi";
-                    if ("tsjs".equals(pf.src.trim())) {
-                        pf.srcDesc = TAGNSHIJIANSHANG;
-                    } else if ("gscd".equals(pf.src.trim())) {
-                        pf.srcDesc = GUSHICIDIAN;
-                    }
+                    ResultFiled pf = ResultFiled.build().src(shangxi.src.trim()).type("shangxi");
+                    pf.put("pid", id);
+                    pf.put("content",  shangxi.shangxi.trim());
                     shangxis.add(pf);
                 }
             }
@@ -269,14 +254,11 @@ public class PoemController {
         }
     }
 
-    private void addBaikeData(String pid, String type, String text, List<PoemField> shangxis) {
-        PoemField sx = new PoemField();
-        sx.pid = pid;
-        sx.content = text;
-        sx.type = type;
-        sx.src = "baidu_baike";
-        sx.srcDesc = BAIDUBAIKE;
-        shangxis.add(sx);
+    private void addBaikeData(String pid, String type, String text, List<ResultFiled> results) {
+        ResultFiled pf = ResultFiled.build().src("baidu_baike").type(type);
+        pf.put("pid", pid);
+        pf.put("content", text);
+        results.add(pf);
     }
 
     @RequestMapping("/poems/random/{num}")
@@ -284,21 +266,20 @@ public class PoemController {
         logger.info("randomPoems  num:" + num);
 
         int number = Integer.parseInt(num);
-        List<Poem> poems = new ArrayList<>();
+        List results = new ArrayList<>();
         Random ra = new Random();
 
         {
             int index = 13952;
             Poem poem = poemRepository.findByPid("" + index);
             if (poem != null && !poem.isEmpty()) {
-                Poem p = new Poem();
-                p.yuanwen = poem.yuanwen;
-                p.zuozhe = poem.zuozhe;
-                p.chaodai = poem.chaodai;
-                p.name = poem.name;
-                p.id = poem.id;
-                p.pid = poem.pid;
-                poems.add(p);
+                ResultFiled rf = ResultFiled.build().type("poem");
+                rf.put("yuanwen", poem.yuanwen);
+                rf.put("zuozhe", poem.zuozhe);
+                rf.put("chaodai", poem.chaodai);
+                rf.put("name", poem.name);
+                rf.put("pid", poem.pid);
+                results.add(rf);
             }
         }
 
@@ -306,34 +287,32 @@ public class PoemController {
             int index = 9542;
             Poem poem = poemRepository.findByPid("" + index);
             if (poem != null && !poem.isEmpty()) {
-                Poem p = new Poem();
-                p.yuanwen = poem.yuanwen;
-                p.zuozhe = poem.zuozhe;
-                p.chaodai = poem.chaodai;
-                p.name = poem.name;
-                p.id = poem.id;
-                p.pid = poem.pid;
-                poems.add(p);
+                ResultFiled rf = ResultFiled.build().type("poem");
+                rf.put("yuanwen", poem.yuanwen);
+                rf.put("zuozhe", poem.zuozhe);
+                rf.put("chaodai", poem.chaodai);
+                rf.put("name", poem.name);
+                rf.put("pid", poem.pid);
+                results.add(rf);
             }
         }
 
 
-        while (poems.size() < number) {
+        while (results.size() < number) {
             int index = ra.nextInt(POEM_MAX);
             Poem poem = poemRepository.findByPid("" + index);
             if (poem != null && !poem.isEmpty()) {
-                Poem p = new Poem();
-                p.yuanwen = poem.yuanwen;
-                p.zuozhe = poem.zuozhe;
-                p.chaodai = poem.chaodai;
-                p.name = poem.name;
-                p.id = poem.id;
-                p.pid = poem.pid;
-                poems.add(p);
+                ResultFiled rf = ResultFiled.build().type("poem");
+                rf.put("yuanwen", poem.yuanwen);
+                rf.put("zuozhe", poem.zuozhe);
+                rf.put("chaodai", poem.chaodai);
+                rf.put("name", poem.name);
+                rf.put("pid", poem.pid);
+                results.add(rf);
             }
 
         }
-        return PoemResult.buildResult(poems);
+        return PoemResult.buildResult(results);
     }
 
 
