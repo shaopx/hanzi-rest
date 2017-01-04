@@ -116,34 +116,40 @@ public class PoemController {
             }
 
 
-            if (poem.shangxis != null) {
+            if (poem.zhujie != null) {
                 if (Utils.isNotNull(poem.zhujie)) {
                     PoemField pf = new PoemField();
                     pf.pid = id;
                     pf.content = poem.zhujie;
-                    pf.src = GUSHICIDIAN;
+                    pf.src = "gscd";
+                    pf.srcDesc = GUSHICIDIAN;
                     data.add(pf);
                 }
-                if (Utils.isNotNull(poem.yiwen)) {
-                    PoemField pf = new PoemField();
-                    pf.pid = id;
-                    pf.content = poem.yiwen;
-                    pf.src = "gscd_yiwen";
-                    data.add(pf);
-                }
+
             }
 
             Baike baike = baikeRepository.findByPid(id);
             if (baike != null) {
                 if (Utils.isNotNull(baike.zhujie)) {
-                    addBaikeData(id, baike.zhujie, data);
+                    addBaikeData(id, "zhushi", baike.zhujie, data);
                 }
                 if (Utils.isNotNull(baike.zhushi)) {
-                    addBaikeData(id, baike.zhushi, data);
+                    addBaikeData(id, "zhushi", baike.zhushi, data);
                 }
-                if (Utils.isNotNull(baike.yiwen)) {
-                    addBaikeData(id, baike.yiwen, data);
-                }
+//                if (Utils.isNotNull(baike.yiwen)) {
+//                    addBaikeData(id, baike.yiwen, data);
+//                }
+            }
+
+
+            if (Utils.isNotNull(poem.yiwen)) {
+                PoemField pf = new PoemField();
+                pf.pid = id;
+                pf.content = poem.yiwen;
+                pf.type = "yiwen";
+                pf.src = "gscd";
+                pf.srcDesc = GUSHICIDIAN;
+                data.add(pf);
             }
 
             return PoemResult.buildResult(data);
@@ -188,7 +194,7 @@ public class PoemController {
             Baike baike = baikeRepository.findByPid(id);
             if (baike != null) {
                 if (Utils.isNotNull(baike.yiwen)) {
-                    addBaikeData(id, baike.yiwen, data);
+                    addBaikeData(id, "yiwen", baike.yiwen, data);
                 }
             }
 
@@ -206,7 +212,7 @@ public class PoemController {
         Poem poem = poemRepository.findByPid(id);
         logger.info("poemById  poem:" + poem);
 
-        String key = "0000000_shangxi" + id;
+        String key = "0000000_sx" + id;
 
         List<PoemField> shangxis = new ArrayList<>();
 
@@ -226,10 +232,11 @@ public class PoemController {
                     pf.pid = id;
                     pf.content = shangxi.shangxi;
                     pf.src = shangxi.src;
-                    if ("tsjs".equals(pf.src)) {
-                        pf.src = TAGNSHIJIANSHANG;
-                    } else if ("gscd".equals(pf.src)) {
-                        pf.src = GUSHICIDIAN;
+                    pf.type = "shangxi";
+                    if ("tsjs".equals(pf.src.trim())) {
+                        pf.srcDesc = TAGNSHIJIANSHANG;
+                    } else if ("gscd".equals(pf.src.trim())) {
+                        pf.srcDesc = GUSHICIDIAN;
                     }
                     shangxis.add(pf);
                 }
@@ -238,16 +245,16 @@ public class PoemController {
             Baike baike = baikeRepository.findByPid(id);
             if (baike != null) {
                 if (Utils.isNotNull(baike.beijing)) {
-                    addBaikeData(id, baike.beijing, shangxis);
+                    addBaikeData(id, "shangxi", baike.beijing, shangxis);
                 }
                 if (Utils.isNotNull(baike.sum)) {
-                    addBaikeData(id, baike.sum, shangxis);
+                    addBaikeData(id, "shangxi", baike.sum, shangxis);
                 }
                 if (Utils.isNotNull(baike.shangxi1)) {
-                    addBaikeData(id, baike.shangxi1, shangxis);
+                    addBaikeData(id, "shangxi", baike.shangxi1, shangxis);
                 }
                 if (Utils.isNotNull(baike.shangxi2)) {
-                    addBaikeData(id, baike.shangxi2, shangxis);
+                    addBaikeData(id, "shangxi", baike.shangxi2, shangxis);
                 }
             }
 
@@ -259,11 +266,13 @@ public class PoemController {
         }
     }
 
-    private void addBaikeData(String pid, String text, List<PoemField> shangxis) {
+    private void addBaikeData(String pid, String type, String text, List<PoemField> shangxis) {
         PoemField sx = new PoemField();
         sx.pid = pid;
         sx.content = text;
-        sx.src = BAIDUBAIKE;
+        sx.type = type;
+        sx.src = "baidu_baike";
+        sx.srcDesc = BAIDUBAIKE;
         shangxis.add(sx);
     }
 

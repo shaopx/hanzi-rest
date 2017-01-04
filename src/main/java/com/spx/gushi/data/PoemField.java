@@ -12,4 +12,6 @@ public class PoemField {
     public String pid;
     public String content;
     public String src;
+    public String srcDesc;
+    public String type;
 }
