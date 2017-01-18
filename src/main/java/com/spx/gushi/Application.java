@@ -45,14 +45,12 @@ public class Application extends SpringBootServletInitializer {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Application.class, args);
-
-
     }
 
     @Bean
     CommandLineRunner init(StorageService storageService) {
         return (args) -> {
-            storageService.deleteAll();
+//            storageService.deleteAll();
             storageService.init();
         };
     }

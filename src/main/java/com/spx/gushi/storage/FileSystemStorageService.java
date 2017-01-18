@@ -80,7 +80,7 @@ public class FileSystemStorageService implements StorageService {
         try {
             Files.createDirectory(rootLocation);
         } catch (IOException e) {
-            throw new StorageException("Could not initialize storage", e);
+            //throw new StorageException("Could not initialize storage", e);
         }
     }
 }
