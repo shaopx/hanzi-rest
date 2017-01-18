@@ -84,10 +84,10 @@ public class HanZiController {
         return shiyiList;
     }
 
-    @RequestMapping("/")
-    public String index() {
-        return "Greetings from Spring Boot!";
-    }
+//    @RequestMapping("/")
+//    public String index() {
+//        return "Greetings from Spring Boot!";
+//    }
 
     @RequestMapping("/poet")
     public Poet poet() {
