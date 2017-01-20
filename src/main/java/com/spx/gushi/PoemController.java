@@ -43,6 +43,9 @@ public class PoemController {
     private BaikeRepository baikeRepository;
 
     @Autowired
+    private ShangxiRepository shangxiRepository;
+
+    @Autowired
     MongoOperations mongo;
 
     @Autowired
@@ -229,31 +232,39 @@ public class PoemController {
                 }
             }
 
-
-            if (poem.shangxis != null && poem.shangxis.size() > 0) {
-                for (Poem.Shangxi shangxi : poem.shangxis) {
-                    Result pf = Result.build().src(shangxi.src.trim()).type("shangxi");
-                    pf.put("pid", id);
-                    pf.put("content",  shangxi.shangxi.trim());
-                    shangxis.add(pf);
-                }
+            List<Shangxi> shangxiList = shangxiRepository.findByPid(id);
+            for (Shangxi shangxi : shangxiList) {
+                Result pf = Result.build().src(shangxi.src.trim()).type("shangxi");
+                pf.put("pid", id);
+                pf.put("content",  shangxi.shangxi.trim());
+                shangxis.add(pf);
             }
 
-            Baike baike = baikeRepository.findByPid(id);
-            if (baike != null) {
-                if (Utils.isNotNull(baike.beijing)) {
-                    addBaikeData(id, "shangxi", baike.beijing, shangxis);
-                }
-                if (Utils.isNotNull(baike.sum)) {
-                    addBaikeData(id, "shangxi", baike.sum, shangxis);
-                }
-                if (Utils.isNotNull(baike.shangxi1)) {
-                    addBaikeData(id, "shangxi", baike.shangxi1, shangxis);
-                }
-                if (Utils.isNotNull(baike.shangxi2)) {
-                    addBaikeData(id, "shangxi", baike.shangxi2, shangxis);
-                }
-            }
+
+//            if (poem.shangxis != null && poem.shangxis.size() > 0) {
+//                for (Poem.Shangxi shangxi : poem.shangxis) {
+//                    Result pf = Result.build().src(shangxi.src.trim()).type("shangxi");
+//                    pf.put("pid", id);
+//                    pf.put("content",  shangxi.shangxi.trim());
+//                    shangxis.add(pf);
+//                }
+//            }
+//
+//            Baike baike = baikeRepository.findByPid(id);
+//            if (baike != null) {
+//                if (Utils.isNotNull(baike.beijing)) {
+//                    addBaikeData(id, "shangxi", baike.beijing, shangxis);
+//                }
+//                if (Utils.isNotNull(baike.sum)) {
+//                    addBaikeData(id, "shangxi", baike.sum, shangxis);
+//                }
+//                if (Utils.isNotNull(baike.shangxi1)) {
+//                    addBaikeData(id, "shangxi", baike.shangxi1, shangxis);
+//                }
+//                if (Utils.isNotNull(baike.shangxi2)) {
+//                    addBaikeData(id, "shangxi", baike.shangxi2, shangxis);
+//                }
+//            }
 
             return PoemResult.buildResult(shangxis);
         } finally {

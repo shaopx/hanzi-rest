@@ -35,7 +35,6 @@ public class Poem {
     public String yuanwen;
     public String zhujie;
     public String yiwen;
-    public List<Shangxi> shangxis;
 
     public boolean isEmpty() {
         return Utils.isNull(yuanwen);
@@ -44,8 +43,4 @@ public class Poem {
     public Poem() {
     }
 
-    public static class Shangxi {
-        public String shangxi;
-        public String src;
-    }
 }
