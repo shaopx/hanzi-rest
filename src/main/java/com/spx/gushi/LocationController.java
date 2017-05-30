@@ -2,6 +2,8 @@ package com.spx.gushi;
 
 import com.spx.gushi.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -30,9 +32,9 @@ public class LocationController {
     }
 
     @RequestMapping("/{uid}")
-    public DataResult where(@PathVariable String uid, @RequestParam(value = "page", defaultValue = "0") int page) {
-        logger.info("where  uid:" + uid + ", page:" + page);
-        List<Myloc> mylocs = mylocRepository.findTop20ByUidOrderByUptimeDesc(uid);
+    public DataResult where(@PathVariable String uid, @RequestParam(value = "before", defaultValue = "0") long before) {
+        logger.info("where  uid:" + uid + ", before:" + before);
+        List<Myloc> mylocs = mylocRepository.findTop40ByUidOrderByUptimeDesc(uid);
         logger.info("where  uid:" + uid + ", mylocs:" + mylocs.size());
 
         List<Result> data = new ArrayList<>();
@@ -42,6 +44,16 @@ public class LocationController {
             return DataResult.buildResult(mylocs);
         } finally {
         }
+//        return mylocs;
+    }
+
+    @RequestMapping("/p/{uid}")
+    public Page<Myloc> pageWhere(@PathVariable String uid, @RequestParam(value = "page", defaultValue = "0") int page) {
+        logger.info("p where  uid:" + uid + ", page:" + page);
+        Page<Myloc> pageData = mylocRepository.findByUidOrderByUptimeDesc(uid, new PageRequest(page, 10));
+        logger.info("p where  uid:" + uid + ", mylocs:" + pageData.getTotalElements());
+
+       return pageData;
 //        return mylocs;
     }
 }
