@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface LogRepository extends MongoRepository<Log, String> {
     public Page<Log> findByUidOrderByUptimeDesc(String uid, org.springframework.data.domain.Pageable pageable);
+//    public List<Log> findDistinctLogByUid();
 }

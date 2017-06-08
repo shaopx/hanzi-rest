@@ -4,9 +4,9 @@ import com.spx.gushi.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -36,10 +36,19 @@ public class LogController {
     @RequestMapping("/{uid}")
     public Object list(@PathVariable String uid, @RequestParam(value = "page", defaultValue = "0") int page) {
         logger.info("list  uid:" + uid +", page:"+page);
-        Page<Log> logs = logRepository.findByUidOrderByUptimeDesc(uid, new PageRequest(page, 100));
+        Page<Log> logs = logRepository.findByUidOrderByUptimeDesc(uid, new PageRequest(page, 30));
         //logger.info("poemById  poem:" + logs.toString());
 
         return logs;
     }
+
+//    @RequestMapping("/uids")
+//    public Object uids() {
+//        logger.info("uids ....");
+//        List<String> logs = logRepository.findDistinctLogByUid();
+//        logger.info("uids:" + logs.toString());
+//
+//        return logs;
+//    }
 
 }
