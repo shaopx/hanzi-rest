@@ -24,10 +24,14 @@ public class LocationController {
     @RequestMapping(value = "/myloc", method = RequestMethod.POST)
     public String myloc(@RequestParam(value = "uid", required = true) String uid,
                         @RequestParam(value = "loc", required = true) String loc,
-                        @RequestParam(value = "uptime", required = true) String uptime) {
+                        @RequestParam(value = "uptime", required = true) String uptime,
+                        @RequestParam(value = "reason", required = true) String reason,
+                        @RequestParam(value = "me", required = true) String me,
+                        @RequestParam(value = "pid", required = true) String pid,
+                        @RequestParam(value = "puid", required = true) String puid) {
         System.out.println("/myloc  id:" + uid + ", loc:" + loc + ", uptime:" + uptime);
 
-        mylocRepository.save(new Myloc(uid, loc, uptime));
+        mylocRepository.save(new Myloc(uid, loc, uptime, reason, me, pid, puid));
         return "ok";
     }
 

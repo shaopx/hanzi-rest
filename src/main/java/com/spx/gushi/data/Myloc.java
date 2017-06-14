@@ -22,13 +22,29 @@ public class Myloc {
     @Field("uptime")
     public String uptime;
 
+    @Field("reason")
+    public String reason;
+
+    @Field("me")
+    public String me;
+
+    @Field("pid")
+    public String pid;
+
+    @Field("puid")
+    public String puid;
+
     public Myloc(){
 
     }
 
-    public Myloc(String uid, String loc, String uptime) {
+    public Myloc(String uid, String loc, String uptime, String reason, String me, String pid, String puid) {
         this.uid = uid;
         this.loc = loc;
         this.uptime = uptime;
+        this.reason = reason;
+        this.me = me;
+        this.pid = pid;
+        this.puid = puid;
     }
 }
