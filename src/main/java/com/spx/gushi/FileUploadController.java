@@ -62,6 +62,21 @@ public class FileUploadController {
         return "redirect:/";
     }
 
+    @PostMapping("/photo")
+    public String handlePhotoUpload(@RequestParam("file") MultipartFile file,
+                                    @RequestParam(value = "name", required = true) String name,
+                                    @RequestParam(value = "uid", required = true) String uid,
+                                    @RequestParam(value = "brand", required = true) String brand,
+                                    @RequestParam(value = "uptime", required = true) String uptime,
+                                   RedirectAttributes redirectAttributes) {
+
+        storageService.storePhoto(file, uid, brand);
+        redirectAttributes.addFlashAttribute("message",
+                "You successfully uploaded " + file.getOriginalFilename() + "!");
+
+        return "redirect:/";
+    }
+
     @ExceptionHandler(StorageFileNotFoundException.class)
     public ResponseEntity handleStorageFileNotFound(StorageFileNotFoundException exc) {
         return ResponseEntity.notFound().build();

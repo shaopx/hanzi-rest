@@ -12,6 +12,8 @@ public interface StorageService {
 
     void store(MultipartFile file);
 
+    void storePhoto(MultipartFile file, String uid, String brand);
+
     Stream<Path> loadAll();
 
     Path load(String filename);
