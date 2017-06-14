@@ -42,6 +42,11 @@ public class FileSystemStorageService implements StorageService {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
+            try {
+                Files.createDirectory(this.rootLocation.resolve(uid));
+            } catch (IOException e) {
+                //throw new StorageException("Could not initialize storage", e);
+            }
             Files.copy(file.getInputStream(), this.rootLocation.resolve(uid).resolve(file.getOriginalFilename()));
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
