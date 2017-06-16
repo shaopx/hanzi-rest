@@ -70,7 +70,7 @@ public class FileUploadController {
                                     @RequestParam(value = "uptime", required = true) String uptime,
                                    RedirectAttributes redirectAttributes) {
 
-        storageService.storePhoto(file, uid, brand);
+        storageService.storePhoto(file, uid, name, brand);
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 

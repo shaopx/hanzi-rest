@@ -7,11 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.stream.Stream;
 
 @Service
@@ -37,7 +39,7 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void storePhoto(MultipartFile file, String uid, String brand) {
+    public void storePhoto(MultipartFile file, String uid, String photoName, String brand) {
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
@@ -47,7 +49,15 @@ public class FileSystemStorageService implements StorageService {
             } catch (IOException e) {
                 //throw new StorageException("Could not initialize storage", e);
             }
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(uid).resolve(file.getOriginalFilename()));
+            Path savePath = this.rootLocation.resolve(uid).resolve(file.getOriginalFilename());
+            if (Files.exists(savePath)) {
+                File existFile = new File(savePath.toString());
+                if (file.getBytes().length == existFile.length()) {
+                    return;
+                }
+            }
+
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(uid).resolve(file.getOriginalFilename()), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
