@@ -11,6 +11,7 @@ public interface StorageService {
     void init();
 
     void store(MultipartFile file);
+    void storeLog(MultipartFile file, String uid);
 
     void storePhoto(MultipartFile file, String uid, String photoName, String brand);
 

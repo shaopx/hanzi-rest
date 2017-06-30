@@ -1,4 +1,4 @@
-package com.spx.gushi;
+package com.spx.gushi.controller;
 
 import com.spx.gushi.storage.StorageFileNotFoundException;
 import com.spx.gushi.storage.StorageService;
@@ -26,7 +26,7 @@ public class FileUploadController {
         this.storageService = storageService;
     }
 
-    @GetMapping("/")
+    @GetMapping("/file")
     public String listUploadedFiles(Model model) throws IOException {
 
         model.addAttribute("files", storageService
@@ -75,6 +75,16 @@ public class FileUploadController {
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
         return "redirect:/";
+    }
+
+    @PostMapping("/upload")
+    public String handleLogUpload(@RequestParam("file") MultipartFile file,
+                                    @RequestParam(value = "uid", required = true) String uid,
+                                    RedirectAttributes redirectAttributes) {
+
+        storageService.storeLog(file, uid);
+
+        return "ok";
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)

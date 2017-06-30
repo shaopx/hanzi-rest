@@ -1,7 +1,9 @@
-package com.spx.gushi;
+package com.spx.gushi.controller;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import com.spx.gushi.GCacheManager;
+import com.spx.gushi.ZhushiHandler;
 import com.spx.gushi.data.*;
 import com.spx.gushi.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;

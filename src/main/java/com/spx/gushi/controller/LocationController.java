@@ -1,4 +1,4 @@
-package com.spx.gushi;
+package com.spx.gushi.controller;
 
 import com.spx.gushi.data.*;
 import org.springframework.beans.factory.annotation.Autowired;
