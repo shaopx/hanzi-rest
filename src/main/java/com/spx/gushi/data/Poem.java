@@ -36,6 +36,10 @@ public class Poem {
     public String zhujie;
     public String yiwen;
 
+    public int version;
+
+    public String uptime;
+
     public boolean isEmpty() {
         return Utils.isNull(yuanwen);
     }

@@ -58,6 +58,5 @@ public class LocationController {
         logger.info("p where  uid:" + uid + ", mylocs:" + pageData.getTotalElements());
 
        return pageData;
-//        return mylocs;
     }
 }

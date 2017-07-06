@@ -7,11 +7,10 @@ import com.spx.gushi.ZhushiHandler;
 import com.spx.gushi.data.*;
 import com.spx.gushi.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +52,34 @@ public class PoemController {
     @Autowired
     GCacheManager cacheManager;
 
+    @RequestMapping(value = "/poem", method = RequestMethod.POST)
+    public Poem newPoem(@RequestParam(value = "name", required = true) String name,
+                           @RequestParam(value = "zuozhe", required = true) String zuozhe,
+                           @RequestParam(value = "yuanwen", required = true) String yuanwen,
+                           @RequestParam(value = "chaodai", required = false) String chaodai,
+                           @RequestParam(value = "zhujie", required = false) String zhujie,
+                           @RequestParam(value = "yiwen", required = false) String yiwen,
+                           @RequestParam(value = "uptime", required = false) String uptime,
+                           @RequestParam(value = "version", required = false) int version
+    ) {
+        System.out.println("/poem  name:" + name + ", zuozhe:" + zuozhe + ", uptime:" + uptime);
+        logger.info("/poem  name:" + name);
+
+        Poem poem = new Poem();
+        poem.name = name;
+        poem.zuozhe = zuozhe;
+        poem.yuanwen = yuanwen;
+        poem.chaodai = chaodai;
+        poem.zhujie = zhujie;
+        poem.yiwen = yiwen;
+
+        poem.uptime = uptime;
+        poem.version = version;
+
+        Poem save = poemRepository.save(poem);
+        return save;
+    }
+
 
     @RequestMapping("/poems/{id}")
     public Poem poemById(@PathVariable String id) {
@@ -61,6 +88,19 @@ public class PoemController {
         logger.info("poemById  poem:" + poem);
 
         return poem;
+    }
+
+    @RequestMapping("/poems/q/{keyword}")
+    public Page<Poem> poemsByKeyword(@PathVariable String keyword,
+                                      @RequestParam(value = "page", defaultValue = "0") int page) {
+        logger.info("poemsByKeyword  keyword:" + keyword);
+        List<Poem> poem = poemRepository.findByYuanwenContains(keyword);
+        logger.info("poemById  poem:" + poem);
+        Page<Poem> pageData = poemRepository.findByYuanwenContains(keyword, new PageRequest(page, 10));
+        logger.info("poems.size:" + pageData.getTotalElements());
+
+
+        return pageData;
     }
 
     @RequestMapping("/poems/zuozhe/{name}")
@@ -88,7 +128,6 @@ public class PoemController {
                 pf.put("content", zuozhe.jieshao);
                 data.add(pf);
             }
-
 
 
             return PoemResult.buildResult(data);
@@ -142,7 +181,7 @@ public class PoemController {
 //                    ZhushiHandler.makeZhushiResult(zhushi, data);
                 }
                 if (Utils.isNotNull(baike.zhushi)) {
-                    String zhushi = Utils.getSubstring(baike.zhushi, "词句注释", poem.name+"白话译文");
+                    String zhushi = Utils.getSubstring(baike.zhushi, "词句注释", poem.name + "白话译文");
                     ZhushiHandler.makeZhushiResult(poem.yuanwen, zhushi, data);
 
 
@@ -153,7 +192,7 @@ public class PoemController {
 //                }
             }
 
-            logger.info("yiwen:"+poem.yiwen);
+            logger.info("yiwen:" + poem.yiwen);
             if (Utils.isNotNull(poem.yiwen)) {
                 Result pf = Result.build().src("gscd").type("yiwen");
                 pf.put("pid", id);
@@ -238,7 +277,7 @@ public class PoemController {
             for (Shangxi shangxi : shangxiList) {
                 Result pf = Result.build().src(shangxi.src.trim()).type("shangxi");
                 pf.put("pid", id);
-                pf.put("content",  shangxi.shangxi.trim());
+                pf.put("content", shangxi.shangxi.trim());
                 shangxis.add(pf);
             }
 
@@ -282,6 +321,7 @@ public class PoemController {
         pf.put("content", text);
         results.add(pf);
     }
+
 
     @RequestMapping("/poems/random/{num}")
     public PoemResult randomPoems(@PathVariable String num) {

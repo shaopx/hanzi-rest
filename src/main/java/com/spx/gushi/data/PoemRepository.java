@@ -1,6 +1,7 @@
 package com.spx.gushi.data;
 
 import com.mongodb.DBObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 
@@ -19,6 +20,7 @@ public interface PoemRepository extends MongoRepository<Poem, String> {
     public List<Poem> findByName(String mingcheng);
     public List<Poem> findByNameContains(String namePiece);
     public List<Poem> findByYuanwenContains(String yuanwen);
+    public Page<Poem> findByYuanwenContains(String yuanwen, org.springframework.data.domain.Pageable pageable);
 
     @Query("?0")
     public List<Poem> findPoems(DBObject queryCondition);
