@@ -34,10 +34,18 @@ public class LogController {
 
 
     @RequestMapping("/{uid}")
-    public Object list(@PathVariable String uid, @RequestParam(value = "page", defaultValue = "0") int page) {
+    public Object findByUid(@PathVariable String uid, @RequestParam(value = "page", defaultValue = "0") int page) {
         logger.info("list  uid:" + uid +", page:"+page);
         Page<Log> logs = logRepository.findByUidOrderByUptimeDesc(uid, new PageRequest(page, 30));
         //logger.info("poemById  poem:" + logs.toString());
+
+        return logs;
+    }
+
+    @RequestMapping("/list")
+    public Page<Log> list( @RequestParam(value = "page", defaultValue = "0") int page) {
+        logger.info("list   page:" + page);
+        Page<Log> logs = logRepository.findByValueOrderByUptimeDesc(1, new PageRequest(page, 30));
 
         return logs;
     }

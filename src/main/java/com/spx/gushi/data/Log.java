@@ -11,6 +11,7 @@ public class Log {
     public String uid;
     public String log;
     public String uptime;
+    public int value=1;
 
     public Log(String uid, String log, String uptime) {
         this.uid = uid;
