@@ -18,6 +18,7 @@ public interface PoemRepository extends MongoRepository<Poem, String> {
     public List<Poem> findByCongshu(String congshu);
     public List<Poem> findByZhaiyao(String zhaiyao);
     public List<Poem> findByName(String mingcheng);
+    public List<Poem> findByZhujieNotNull();
     public List<Poem> findByNameContains(String namePiece);
     public List<Poem> findByYuanwenContains(String yuanwen);
     public Page<Poem> findByYuanwenContains(String yuanwen, org.springframework.data.domain.Pageable pageable);

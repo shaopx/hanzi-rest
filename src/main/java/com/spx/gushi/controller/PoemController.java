@@ -54,13 +54,13 @@ public class PoemController {
 
     @RequestMapping(value = "/poem", method = RequestMethod.POST)
     public Poem newPoem(@RequestParam(value = "name", required = true) String name,
-                           @RequestParam(value = "zuozhe", required = true) String zuozhe,
-                           @RequestParam(value = "yuanwen", required = true) String yuanwen,
-                           @RequestParam(value = "chaodai", required = false) String chaodai,
-                           @RequestParam(value = "zhujie", required = false) String zhujie,
-                           @RequestParam(value = "yiwen", required = false) String yiwen,
-                           @RequestParam(value = "uptime", required = false) String uptime,
-                           @RequestParam(value = "version", required = false) int version
+                        @RequestParam(value = "zuozhe", required = true) String zuozhe,
+                        @RequestParam(value = "yuanwen", required = true) String yuanwen,
+                        @RequestParam(value = "chaodai", required = false) String chaodai,
+                        @RequestParam(value = "zhujie", required = false) String zhujie,
+                        @RequestParam(value = "yiwen", required = false) String yiwen,
+                        @RequestParam(value = "uptime", required = false) String uptime,
+                        @RequestParam(value = "version", required = false) int version
     ) {
         System.out.println("/poem  name:" + name + ", zuozhe:" + zuozhe + ", uptime:" + uptime);
         logger.info("/poem  name:" + name);
@@ -92,7 +92,7 @@ public class PoemController {
 
     @RequestMapping("/poems/q/{keyword}")
     public Page<Poem> poemsByKeyword(@PathVariable String keyword,
-                                      @RequestParam(value = "page", defaultValue = "0") int page) {
+                                     @RequestParam(value = "page", defaultValue = "0") int page) {
         logger.info("poemsByKeyword  keyword:" + keyword);
         List<Poem> poem = poemRepository.findByYuanwenContains(keyword);
         logger.info("poemById  poem:" + poem);
@@ -324,38 +324,39 @@ public class PoemController {
 
 
     @RequestMapping("/poems/random/{num}")
-    public PoemResult randomPoems(@PathVariable String num) {
+    public PoemResult randomPoems(@PathVariable String num, @RequestParam(value = "page", defaultValue = "0") int page) {
         logger.info("randomPoems  num:" + num);
 
         int number = Integer.parseInt(num);
         List results = new ArrayList<>();
         Random ra = new Random();
-
-        {
-            int index = 13952;
-            Poem poem = poemRepository.findByPid("" + index);
-            if (poem != null && !poem.isEmpty()) {
-                Result rf = Result.build().type("poem");
-                rf.put("yuanwen", poem.yuanwen);
-                rf.put("zuozhe", poem.zuozhe);
-                rf.put("chaodai", poem.chaodai);
-                rf.put("name", poem.name);
-                rf.put("pid", poem.pid);
-                results.add(rf);
+        if (page == 0) {
+            {
+                int index = 13952;
+                Poem poem = poemRepository.findByPid("" + index);
+                if (poem != null && !poem.isEmpty()) {
+                    Result rf = Result.build().type("poem");
+                    rf.put("yuanwen", poem.yuanwen);
+                    rf.put("zuozhe", poem.zuozhe);
+                    rf.put("chaodai", poem.chaodai);
+                    rf.put("name", poem.name);
+                    rf.put("pid", poem.pid);
+                    results.add(rf);
+                }
             }
-        }
 
-        {
-            int index = 9542;
-            Poem poem = poemRepository.findByPid("" + index);
-            if (poem != null && !poem.isEmpty()) {
-                Result rf = Result.build().type("poem");
-                rf.put("yuanwen", poem.yuanwen);
-                rf.put("zuozhe", poem.zuozhe);
-                rf.put("chaodai", poem.chaodai);
-                rf.put("name", poem.name);
-                rf.put("pid", poem.pid);
-                results.add(rf);
+            {
+                int index = 9542;
+                Poem poem = poemRepository.findByPid("" + index);
+                if (poem != null && !poem.isEmpty()) {
+                    Result rf = Result.build().type("poem");
+                    rf.put("yuanwen", poem.yuanwen);
+                    rf.put("zuozhe", poem.zuozhe);
+                    rf.put("chaodai", poem.chaodai);
+                    rf.put("name", poem.name);
+                    rf.put("pid", poem.pid);
+                    results.add(rf);
+                }
             }
         }
 
@@ -368,6 +369,8 @@ public class PoemController {
                 rf.put("yuanwen", poem.yuanwen);
                 rf.put("zuozhe", poem.zuozhe);
                 rf.put("chaodai", poem.chaodai);
+                rf.put("zhujie", poem.zhujie);
+                rf.put("yiwen", poem.yiwen);
                 rf.put("name", poem.name);
                 rf.put("pid", poem.pid);
                 results.add(rf);
